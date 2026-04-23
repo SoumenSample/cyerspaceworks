@@ -111,7 +111,7 @@ export default function LeadsClient() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+    <div className="grid gap-4 xl:grid-cols-[30%_70%]">
       <Card>
         <CardHeader>
           <CardTitle>Add Lead</CardTitle>
@@ -189,13 +189,20 @@ export default function LeadsClient() {
             <p className="text-gray-400">No leads found.</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="min-w-[920px] w-full table-fixed text-left text-sm">
+                <colgroup>
+                  <col className="w-[16%]" />
+                  <col className="w-[24%]" />
+                  <col className="w-[28%]" />
+                  <col className="w-[14%]" />
+                  <col className="w-[18%]" />
+                </colgroup>
                 <thead>
                   <tr className="border-b border-cyan-500/20 text-cyan-200">
-                    <th className="py-2">Name</th>
-                    <th className="py-2">Contact</th>
-                    <th className="py-2">Services</th>
-                    <th className="py-2">Source</th>
+                    <th className="py-2 pr-2">Name</th>
+                    <th className="py-2 pr-2">Contact</th>
+                    <th className="py-2 pr-2">Services</th>
+                    <th className="py-2 pr-2">Source</th>
                     <th className="py-2">Date</th>
                   </tr>
                 </thead>
@@ -203,22 +210,22 @@ export default function LeadsClient() {
                 <tbody>
                   {leads.map((lead) => (
                     <tr key={lead._id} className="border-b border-cyan-500/10 align-top">
-                      <td className="py-2">
-                        <p>{lead.name}</p>
+                      <td className="py-2 pr-2">
+                        <p className="break-words whitespace-normal">{lead.name}</p>
                         <p className="text-xs text-cyan-100/70">{lead.budget ? `Budget: ${lead.budget}` : "Budget: N/A"}</p>
                       </td>
-                      <td className="py-2">
-                        <p>{lead.email}</p>
-                        <p className="text-xs text-cyan-100/70">{lead.phone}</p>
+                      <td className="py-2 pr-2">
+                        <p className="break-all whitespace-normal">{lead.email}</p>
+                        <p className="text-xs text-cyan-100/70 break-all">{lead.phone}</p>
                       </td>
-                      <td className="py-2">
-                        {(lead.services || []).join(", ") || "N/A"}
+                      <td className="py-2 pr-2">
+                        <p className="break-words whitespace-normal">{(lead.services || []).join(", ") || "N/A"}</p>
                         {lead.requirement ? (
-                          <p className="mt-1 text-xs text-cyan-100/70">Req: {lead.requirement}</p>
+                          <p className="mt-1 text-xs text-cyan-100/70 break-words whitespace-normal">Req: {lead.requirement}</p>
                         ) : null}
                       </td>
-                      <td className="py-2 uppercase">{lead.source}</td>
-                      <td className="py-2">{new Date(lead.createdAt).toLocaleString()}</td>
+                      <td className="py-2 pr-2 uppercase break-words whitespace-normal">{lead.source}</td>
+                      <td className="py-2 break-words whitespace-normal">{new Date(lead.createdAt).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>

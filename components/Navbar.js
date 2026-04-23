@@ -990,15 +990,17 @@ export default function Navbar() {
                 }`}></span>
               </li>
 
-              <li>
-                <button
-                  type="button"
-                  onClick={openQuoteModal}
-                  className="flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
-                >
-                  Quick Enquiry
-                </button>
-              </li>
+              {!isAuthenticated && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={openQuoteModal}
+                    className="flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
+                  >
+                    Quick Enquiry
+                  </button>
+                </li>
+              )}
 
               {isAuthenticated ? (
                 <>
@@ -1075,16 +1077,18 @@ export default function Navbar() {
                   </p>
                 </div>
                 <div className="mt-auto space-y-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsLeftMenuOpen(false);
-                      openQuoteModal();
-                    }}
-                    className="w-full flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
-                  >
-                    Quick Enquiry
-                  </button>
+                  {!isAuthenticated && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsLeftMenuOpen(false);
+                        openQuoteModal();
+                      }}
+                      className="w-full flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
+                    >
+                      Quick Enquiry
+                    </button>
+                  )}
 
                   {isAuthenticated ? (
                     <>
