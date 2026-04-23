@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(req) {
   try {
     const body = await req.json();

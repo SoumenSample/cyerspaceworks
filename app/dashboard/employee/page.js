@@ -1,6 +1,8 @@
 import { requireRole } from "@/lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+export const dynamic = "force-dynamic";
+
 export default async function EmployeeDashboardPage() {
   const session = await requireRole("employee");
 

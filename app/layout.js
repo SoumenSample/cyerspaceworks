@@ -214,7 +214,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Loader from "@/components/Loader";
 import BackToTopButton from "@/components/BackToTopButton";
-import cursor from "@/public/cursor.png";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
@@ -289,7 +288,7 @@ export default function RootLayout({ children }) {
 
       <body
         className={`${rubik.variable} antialiased relative min-h-screen bg-black`}
-        style={{ cursor: `url(${cursor.src}) 16 16, default` }}
+        style={{ cursor: "url('/cursor.png') 16 16, default" }}
       >
         {/* GTM noscript */}
         <noscript>

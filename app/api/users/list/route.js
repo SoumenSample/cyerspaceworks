@@ -4,6 +4,9 @@ import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import Message from "@/lib/models/Message";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);

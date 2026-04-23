@@ -617,16 +617,40 @@ import { IoCallOutline, IoMailOutline, IoLocationOutline } from "react-icons/io5
 import { HomeIcon, Cog6ToothIcon, InformationCircleIcon, PhoneIcon } from "@heroicons/react/24/solid";
 import { SiGoogleanalytics } from "react-icons/si";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isServicesOpenMobile, setIsServicesOpenMobile] = useState(false);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [stepFormData, setStepFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: [],
+    requirement: "",
+    budget: "",
+  });
+  const [stepError, setStepError] = useState("");
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
   const closeTimeoutRef = useRef(null);
   const pathname = usePathname();
+  const router = useRouter();
   const { status } = useSession();
   const isAuthenticated = status === "authenticated";
+
+  const quoteSteps = [
+    { key: "name", label: "What is your name?", type: "text", placeholder: "Enter your full name" },
+    { key: "email", label: "What is your email address?", type: "email", placeholder: "Enter your email" },
+    { key: "phone", label: "What is your phone number?", type: "tel", placeholder: "Enter your phone number" },
+    { key: "service", label: "Which service do you need?", type: "checkbox" },
+    { key: "requirement", label: "Briefly describe your requirement", type: "text", placeholder: "Tell us about your project" },
+    { key: "budget", label: "What is your budget?", type: "text", placeholder: "Enter your budget" },
+  ];
 
   // ✅ AI & Intelligent Systems added as FIRST service
   const services = [
@@ -701,6 +725,144 @@ export default function Navbar() {
     if (href === "/services" && current.startsWith("/services")) return true;
     return false;
   };
+
+  const resetQuoteForm = () => {
+    setCurrentStepIndex(0);
+    setIsComplete(false);
+    setStepError("");
+    setIsSubmittingLead(false);
+    setStepFormData({
+      name: "",
+      email: "",
+      phone: "",
+      service: [],
+      requirement: "",
+      budget: "",
+    });
+  };
+
+  const openQuoteModal = () => {
+    resetQuoteForm();
+    setIsQuoteModalOpen(true);
+  };
+
+  const closeQuoteModal = () => {
+    setIsQuoteModalOpen(false);
+    resetQuoteForm();
+  };
+
+  const validateStepValue = (key, value) => {
+    if (key === "service") {
+      if (!Array.isArray(value) || value.length === 0) {
+        return "Please select at least one service.";
+      }
+      return "";
+    }
+
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return "This field is required.";
+
+    if (key === "email") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(trimmedValue)) return "Please enter a valid email address.";
+    }
+
+    if (key === "phone") {
+      const phonePattern = /^[0-9]{10,15}$/;
+      if (!phonePattern.test(trimmedValue.replace(/\s+/g, ""))) {
+        return "Please enter a valid phone number (10-15 digits).";
+      }
+    }
+
+    return "";
+  };
+
+  const handleStepInputChange = (event) => {
+    const { value } = event.target;
+    const activeStep = quoteSteps[currentStepIndex];
+    setStepFormData((prev) => ({ ...prev, [activeStep.key]: value }));
+    if (stepError) setStepError("");
+  };
+
+  const handleServiceSelectionChange = (serviceName) => {
+    setStepFormData((prev) => {
+      const selectedServices = Array.isArray(prev.service) ? prev.service : [];
+      const isSelected = selectedServices.includes(serviceName);
+
+      return {
+        ...prev,
+        service: isSelected
+          ? selectedServices.filter((item) => item !== serviceName)
+          : [...selectedServices, serviceName],
+      };
+    });
+
+    if (stepError) setStepError("");
+  };
+
+  const handleStepSubmit = async (event) => {
+    event.preventDefault();
+    const activeStep = quoteSteps[currentStepIndex];
+    const currentValue = stepFormData[activeStep.key] ?? "";
+    const validationMessage = validateStepValue(activeStep.key, currentValue);
+
+    if (validationMessage) {
+      setStepError(validationMessage);
+      return;
+    }
+
+    const isLastStep = currentStepIndex === quoteSteps.length - 1;
+    if (!isLastStep) {
+      setCurrentStepIndex((prev) => prev + 1);
+      return;
+    }
+
+    try {
+      setIsSubmittingLead(true);
+      setStepError("");
+
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: stepFormData.name,
+          email: stepFormData.email,
+          phone: stepFormData.phone,
+          services: stepFormData.service,
+          requirement: stepFormData.requirement,
+          budget: stepFormData.budget,
+          source: "quick-enquiry",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit enquiry.");
+      }
+
+      setIsComplete(true);
+      setTimeout(() => {
+        closeQuoteModal();
+        router.push("/");
+      }, 2200);
+    } catch (error) {
+      setStepError(error.message || "Failed to submit enquiry.");
+    } finally {
+      setIsSubmittingLead(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isQuoteModalOpen) return;
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        closeQuoteModal();
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isQuoteModalOpen]);
 
   return (
     <>
@@ -828,6 +990,16 @@ export default function Navbar() {
                 }`}></span>
               </li>
 
+              <li>
+                <button
+                  type="button"
+                  onClick={openQuoteModal}
+                  className="flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
+                >
+                  Quick Enquiry
+                </button>
+              </li>
+
               {isAuthenticated ? (
                 <>
                   <li>
@@ -903,6 +1075,17 @@ export default function Navbar() {
                   </p>
                 </div>
                 <div className="mt-auto space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLeftMenuOpen(false);
+                      openQuoteModal();
+                    }}
+                    className="w-full flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
+                  >
+                    Quick Enquiry
+                  </button>
+
                   {isAuthenticated ? (
                     <>
                       <Link
@@ -1068,6 +1251,112 @@ export default function Navbar() {
 
         </div>
       </div>
+
+      {isQuoteModalOpen && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 z-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => closeQuoteModal()}
+          ></div>
+
+          <div
+            className="relative z-10 w-full max-w-md rounded-2xl border border-cyan-400/30 bg-[#050b14] p-6 shadow-[0_0_40px_rgba(6,182,212,0.22)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                closeQuoteModal();
+              }}
+              className="absolute right-3 top-3 text-cyan-200 hover:text-cyan-400"
+              aria-label="Close form"
+            >
+              <XMarkIcon className="w-5 h-5" />
+            </button>
+
+            {isComplete ? (
+              <div className="py-8 text-center">
+                <h3 className="text-2xl font-semibold text-cyan-300">Thank you</h3>
+                <p className="mt-3 text-sm text-cyan-100/90">
+                  Thanks for choosing us. We will contact you at the earliest.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleStepSubmit} className="space-y-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-cyan-400/80">
+                  Step {currentStepIndex + 1} of {quoteSteps.length}
+                </p>
+                <h3 className="text-xl font-semibold text-white">
+                  {quoteSteps[currentStepIndex].label}
+                </h3>
+
+                {quoteSteps[currentStepIndex].type === "checkbox" ? (
+                  <div className="max-h-52 space-y-2 overflow-y-auto rounded-lg border border-cyan-500/30 bg-black/40 p-3">
+                    {services.map((serviceItem) => {
+                      const isChecked = Array.isArray(stepFormData.service) && stepFormData.service.includes(serviceItem.name);
+                      return (
+                        <label
+                          key={serviceItem.name}
+                          className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition hover:bg-white/5"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => handleServiceSelectionChange(serviceItem.name)}
+                            className="h-4 w-4 accent-cyan-400"
+                          />
+                          <span className="text-sm text-cyan-100">{serviceItem.name}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <input
+                    type={quoteSteps[currentStepIndex].type}
+                    value={stepFormData[quoteSteps[currentStepIndex].key]}
+                    onChange={handleStepInputChange}
+                    placeholder={quoteSteps[currentStepIndex].placeholder}
+                    className="w-full rounded-lg border border-cyan-500/30 bg-black/40 px-4 py-3 text-white placeholder:text-gray-400 focus:border-cyan-400 focus:outline-none"
+                    autoFocus
+                  />
+                )}
+
+                {stepError && (
+                  <p className="text-sm text-red-300">{stepError}</p>
+                )}
+
+                <div className="flex items-center justify-between gap-3 pt-2">
+                  <button
+                    type="button"
+                    disabled={currentStepIndex === 0}
+                    onClick={() => {
+                      setStepError("");
+                      setCurrentStepIndex((prev) => Math.max(prev - 1, 0));
+                    }}
+                    className="rounded-full border border-cyan-500/40 px-4 py-2 text-sm text-cyan-100 transition hover:bg-cyan-500/10 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmittingLead}
+                    className="rounded-full bg-cyan-400 px-5 py-2 text-sm font-semibold text-black transition hover:bg-cyan-300"
+                  >
+                    {isSubmittingLead
+                      ? "Submitting..."
+                      : currentStepIndex === quoteSteps.length - 1
+                        ? "Final Submit"
+                        : "Submit"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

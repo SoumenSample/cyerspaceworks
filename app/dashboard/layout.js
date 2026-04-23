@@ -19,10 +19,18 @@ export default async function DashboardLayout({ children }) {
             <Link href="/dashboard" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
               Home
             </Link>
+            <Link href="/dashboard/tickets" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
+              Tickets
+            </Link>
             {session.user.role === "admin" ? (
-              <Link href="/dashboard/admin/users" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
-                Manage Users
-              </Link>
+              <>
+                <Link href="/dashboard/admin/users" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
+                  Manage Users
+                </Link>
+                <Link href="/dashboard/admin/leads" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
+                  Leads
+                </Link>
+              </>
             ) : null}
             <LogoutButton />
           </div>

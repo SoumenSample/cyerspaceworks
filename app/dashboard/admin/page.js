@@ -2,6 +2,8 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardPage() {
   await requireRole("admin");
 
@@ -28,6 +30,18 @@ export default async function AdminDashboardPage() {
           <p className="text-sm text-cyan-100/80">
             All accounts are provisioned by admin to keep role assignments controlled.
           </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Leads</CardTitle>
+          <CardDescription>View quick enquiries and add leads manually.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href="/dashboard/admin/leads" className="text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+            Open Leads
+          </Link>
         </CardContent>
       </Card>
     </div>

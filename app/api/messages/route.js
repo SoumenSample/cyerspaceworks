@@ -4,6 +4,10 @@ import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import Conversation from "@/lib/models/Conversation";
 import Message from "@/lib/models/Message";
+import { emitToUsers } from "@/lib/socket/server";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(req) {
   const session = await getServerSession(authOptions);
@@ -42,11 +46,18 @@ export async function POST(req) {
     });
   }
 
+ 
   const message = await Message.create({
     conversationId: convo._id,
     sender: sender._id,
     receiver: receiver._id,
     text: text.trim(),
+  });
+
+  emitToUsers([receiver._id], "receive-message", message);
+  emitToUsers([receiver._id], "notification", {
+    type: "chat",
+    text: "New message",
   });
 
   return Response.json({ message });

@@ -3,6 +3,9 @@ import nodemailer from "nodemailer";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(req) {
     console.log("🔥 Forgot Password API HIT");
   try {

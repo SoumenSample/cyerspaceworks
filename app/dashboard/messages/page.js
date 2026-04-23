@@ -278,10 +278,6 @@ export default function ChatPage() {
       return;
     }
 
-    const activeSocket = socketRef.current;
-    if (activeSocket?.connected) {
-      activeSocket.emit("send-message", data.message);
-    }
     setChat((prev) => [...prev, data.message]);
     setMessage("");
     fetchUsers();
