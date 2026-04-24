@@ -31,19 +31,30 @@ export default function LoginPage() {
     setError("");
     setIsSubmitting(true);
 
-    const response = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const response = await signIn("credentials", {
+        email,
+        password,
+        callbackUrl,
+        redirect: false,
+      });
 
-    if (response?.error) {
-      setError("Invalid credentials or inactive account.");
+      if (response?.error) {
+        setError("Invalid credentials or inactive account.");
+        return;
+      }
+
+      if (response?.url) {
+        router.replace(response.url);
+        return;
+      }
+
+      router.replace(callbackUrl);
+    } catch (err) {
+      setError("Unable to sign in right now. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    router.push(callbackUrl);
   }
 
   return (
