@@ -8,7 +8,31 @@ export default async function AdminDashboardPage() {
   await requireRole("admin");
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Timeline</CardTitle>
+          <CardDescription>Plan projects, assign employees, and break work into task checkpoints.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href="/dashboard/projects" className="text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+            Open Project Manager
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Billing Studio</CardTitle>
+          <CardDescription>Create bill and invoice templates for client accounts.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href="/dashboard/admin/billing" className="text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+            Open Billing
+          </Link>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Admin Control</CardTitle>

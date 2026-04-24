@@ -115,7 +115,7 @@ export default function LeadsClient() {
       <Card>
         <CardHeader>
           <CardTitle>Add Lead</CardTitle>
-          <CardDescription>Add a lead manually from calls or offline references.</CardDescription>
+          {/* <CardDescription>Add a lead manually from calls or offline references.</CardDescription> */}
         </CardHeader>
 
         <CardContent>
