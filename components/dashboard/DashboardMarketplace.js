@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import DashboardProductCard from "./DashboardProductCard";
@@ -35,11 +35,7 @@ export default function DashboardMarketplace() {
     { value: "research-and-analytics", label: "Research & Analytics" },
   ];
 
-  useEffect(() => {
-    fetchProducts();
-  }, [category, page]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const query = new URLSearchParams({
@@ -60,7 +56,11 @@ export default function DashboardMarketplace() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [category, page]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   if (status === "loading") {
     return (

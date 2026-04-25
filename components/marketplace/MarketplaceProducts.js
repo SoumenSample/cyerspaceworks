@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ProductCard from "./ProductCard";
 import "./marketplace.css";
 
@@ -22,11 +22,7 @@ export default function MarketplaceProducts() {
     { value: "research-and-analytics", label: "Research & Analytics" },
   ];
 
-  useEffect(() => {
-    fetchProducts();
-  }, [category, page]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const query = new URLSearchParams({
@@ -47,7 +43,11 @@ export default function MarketplaceProducts() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [category, page]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   return (
     <div className="marketplace-container">

@@ -589,7 +589,7 @@
 //   );
 // }
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { IoReorderThree } from "react-icons/io5";
 import Image from "next/image";
@@ -727,7 +727,7 @@ export default function Navbar() {
     return false;
   };
 
-  const resetQuoteForm = () => {
+  const resetQuoteForm = useCallback(() => {
     setCurrentStepIndex(0);
     setIsComplete(false);
     setStepError("");
@@ -740,17 +740,17 @@ export default function Navbar() {
       requirement: "",
       budget: "",
     });
-  };
+  }, []);
 
   const openQuoteModal = () => {
     resetQuoteForm();
     setIsQuoteModalOpen(true);
   };
 
-  const closeQuoteModal = () => {
+  const closeQuoteModal = useCallback(() => {
     setIsQuoteModalOpen(false);
     resetQuoteForm();
-  };
+  }, [resetQuoteForm]);
 
   const validateStepValue = (key, value) => {
     if (key === "service") {
@@ -863,7 +863,7 @@ export default function Navbar() {
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [isQuoteModalOpen]);
+  }, [isQuoteModalOpen, closeQuoteModal]);
 
   return (
     <>

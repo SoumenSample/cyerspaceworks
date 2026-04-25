@@ -50,7 +50,7 @@ export default function DashboardProductCard({ product }) {
               onClick={() => setShowInterestForm(true)}
               className="btn btn-interest"
             >
-              I'm Interested
+              I&apos;m Interested
             </button>
           </div>
         </div>

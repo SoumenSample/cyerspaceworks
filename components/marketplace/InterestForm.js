@@ -67,7 +67,7 @@ export default function InterestForm({ productId, productTitle, onClose }) {
         {success ? (
           <div className="success-message">
             <p>✓ Thank you! Your interest has been submitted.</p>
-            <p>We'll notify the creator about your interest!</p>
+            <p>We&apos;ll notify the creator about your interest!</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="interest-form">
