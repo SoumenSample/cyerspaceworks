@@ -3,6 +3,7 @@ import ServicesPage from "@/components/ServicesPage";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Expert IT Services | in Howrah, Kolkata, India | Cyberspace Works",
   description:
     "Explore our full suite of professional services, including Web, App, and Software Development. Get expert help and a free quote today!",

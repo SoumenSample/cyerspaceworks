@@ -3,6 +3,7 @@ import GraphicDesign  from "@/components/ServicesComponents/GraphicDesign";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Creative Graphics Design Services in Kolkata, India",
   description:
     "Professional Graphics Design for branding, marketing, and web assets. We create visually compelling materials to elevate your brand presence in Kolkata.",

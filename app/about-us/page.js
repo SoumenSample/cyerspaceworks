@@ -3,6 +3,7 @@ import AboutUs from "@/components/AboutPage";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "About Cyberspace Works - IT Agency in Kolkata, India",
   description:
     "Learn about Cyberspace Works, a leading Kolkata-based agency specializing in high-impact Web, App, and Software Development since 2022.",

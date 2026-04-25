@@ -3,6 +3,7 @@ import AppDevelopment  from "@/components/ServicesComponents/AppDevelopment";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Top Mobile App Development Company in Kolkata, India",
   description:
     "Build custom, robust Mobile Apps (iOS/Android) with our expert developers in Kolkata. Transform your idea into a market-ready application.",

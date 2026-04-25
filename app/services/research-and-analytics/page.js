@@ -3,6 +3,7 @@ import ResearchAndAnalytics  from "@/components/ServicesComponents/ResearchAndAn
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Research & Analytics Services for Business Growth",
   description:
     "Leverage data-driven insights with our Research & Analytics services. Optimize your strategy and decision-making in Kolkata and beyond.",

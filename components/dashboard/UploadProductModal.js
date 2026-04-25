@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { convertGoogleDriveLink, isGoogleDriveLink } from "@/lib/utils/driveImageUtils";
 import "./dashboard-marketplace.css";
 
@@ -331,9 +332,12 @@ export default function UploadProductModal({ onClose, onSuccess }) {
               <div className="form-group">
                 <label>Image Preview</label>
                 <div className="image-preview-small mt-3">
-                  <img 
+                  <Image
                     src={previewUrl} 
                     alt="Preview" 
+                    width={800}
+                    height={500}
+                    unoptimized
                     onError={() => setPreviewError(true)}
                     crossOrigin="anonymous"
                     style={{ maxWidth: "100%", maxHeight: "250px", objectFit: "contain" }}

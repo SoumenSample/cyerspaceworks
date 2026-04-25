@@ -3,6 +3,7 @@ import UiUxDesign  from "@/components/ServicesComponents/UiUxDesign";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Professional UI/UX Design Services in Kolkata, India",
   description:
     "Enhance user engagement with stunning and intuitive UI/UX Design. We craft seamless digital experiences for web and mobile apps in Kolkata.",

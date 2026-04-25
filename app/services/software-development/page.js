@@ -3,6 +3,7 @@ import SoftwareDevelopment  from "@/components/ServicesComponents/SoftwareDevelo
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Custom Software Development Solutions in Kolkata, India",
   description:
     "Get tailor-made Software Development services in Kolkata, including CRM, ERP, and enterprise solutions designed for efficiency and scale.",

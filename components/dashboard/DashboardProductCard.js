@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import DashboardInterestForm from "./DashboardInterestForm";
 import "./dashboard-marketplace.css";
 
@@ -11,9 +12,12 @@ export default function DashboardProductCard({ product }) {
     <>
       <div className="dashboard-product-card">
         <div className="product-image-wrapper">
-          <img
+          <Image
             src={product.imageUrl}
             alt={product.title}
+            width={600}
+            height={360}
+            unoptimized
             className="product-image"
           />
           <div className="product-category-badge">{product.category.replace("-", " ")}</div>

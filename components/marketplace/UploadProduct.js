@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import "./upload.css";
@@ -170,7 +171,13 @@ export default function UploadProduct() {
               />
               {formData.imageUrl && (
                 <div className="image-preview">
-                  <img src={formData.imageUrl} alt="Preview" />
+                  <Image
+                    src={formData.imageUrl}
+                    alt="Preview"
+                    width={800}
+                    height={500}
+                    unoptimized
+                  />
                 </div>
               )}
             </div>

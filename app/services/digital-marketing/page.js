@@ -3,6 +3,7 @@ import DigitalMarketing  from "@/components/ServicesComponents/DigitalMarketing"
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Digital Marketing Services in Kolkata, India",
   description:
     "Boost your traffic and leads with our full range of Digital Marketing services (SEO, PPC, SMM) in Kolkata, West Bengal. Start growing today!",

@@ -3,6 +3,7 @@ import WebDevelopment from "@/components/ServicesComponents/WebDevelopment";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Expert Web Development Services in Kolkata, India",
   description:
     "Need a powerful website? We offer full-stack Web Development services in Kolkata for scalable, secure, and high-performing business solutions.",

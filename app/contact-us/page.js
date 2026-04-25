@@ -3,6 +3,7 @@ import ContactPage from "@/components/ContactPage";
 import DynamicCanonical from "@/components/DynamicCanonical"; 
 // ✅ Server Component metadata
 export const metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
   title: "Contact Cyberspace Works in Kolkata, West Bengal",
   description:
     "Get in touch with the Cyberspace Works team in Kolkata for consultation on Web Development, Digital Marketing, or Software projects. Call us!",
