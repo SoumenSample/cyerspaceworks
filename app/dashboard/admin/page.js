@@ -9,7 +9,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Project Timeline</CardTitle>
           <CardDescription>Plan projects, assign employees, and break work into task checkpoints.</CardDescription>
@@ -68,6 +68,18 @@ export default async function AdminDashboardPage() {
           </Link>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Clients</CardTitle>
+          <CardDescription>Manage clients, convert leads to clients, and track validity periods.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href="/dashboard/admin/clients" className="text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+            Open Clients
+          </Link>
+        </CardContent>
+      </Card> */}
     </div>
   );
 }

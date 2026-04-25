@@ -19,6 +19,11 @@ export default function AdminUsersPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("client");
+  const [finalBudget, setFinalBudget] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [validFrom, setValidFrom] = useState("");
+  const [validTo, setValidTo] = useState("");
 
   const [users, setUsers] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,15 +68,49 @@ export default function AdminUsersPage() {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    if (role === "client" && (!validFrom || !validTo)) {
+      setError("Contract starting and ending dates are required for client users.");
+      return;
+    }
+
+    if (role === "client" && !finalBudget) {
+      setError("Final budget is required for client users.");
+      return;
+    }
+
+    if (role === "client") {
+      const fromDate = new Date(validFrom);
+      const toDate = new Date(validTo);
+      if (fromDate >= toDate) {
+        setError("Contract ending date must be after starting date.");
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     setMessage("");
     setError("");
 
     try {
+      const payload = {
+        name,
+        email,
+        password,
+        role,
+      };
+
+      if (role === "client") {
+        payload.finalBudget = finalBudget;
+        payload.projectName = projectName;
+        payload.projectDescription = projectDescription;
+        payload.validFrom = validFrom;
+        payload.validTo = validTo;
+      }
+
       const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -87,6 +126,11 @@ export default function AdminUsersPage() {
       setEmail("");
       setPassword("");
       setRole("client");
+      setFinalBudget("");
+      setProjectName("");
+      setProjectDescription("");
+      setValidFrom("");
+      setValidTo("");
 
       loadUsers();
     } catch (err) {
@@ -181,6 +225,61 @@ export default function AdminUsersPage() {
                 <option value="employee">Employee</option>
               </select>
             </div>
+
+            {/* Client-specific fields */}
+            {role === "client" && (
+              <>
+                <div>
+                  <Label>Contract Starting Date*</Label>
+                  <Input
+                    type="date"
+                    value={validFrom}
+                    onChange={(e) => setValidFrom(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Contract Ending Date*</Label>
+                  <Input
+                    type="date"
+                    value={validTo}
+                    onChange={(e) => setValidTo(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Final Budget*</Label>
+                  <Input
+                    value={finalBudget}
+                    onChange={(e) => setFinalBudget(e.target.value)}
+                    placeholder="Enter final budget"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Project Name (optional)</Label>
+                  <Input
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    placeholder="Enter project name"
+                  />
+                </div>
+
+                <div>
+                  <Label>Project Description (optional)</Label>
+                  <textarea
+                    value={projectDescription}
+                    onChange={(e) => setProjectDescription(e.target.value)}
+                    placeholder="Enter project description"
+                    rows={3}
+                    className="w-full rounded-md border border-cyan-500/30 bg-black/60 px-3 py-2 text-sm text-cyan-100"
+                  />
+                </div>
+              </>
+            )}
 
             {message && (
               <p className="text-sm text-emerald-400">{message}</p>

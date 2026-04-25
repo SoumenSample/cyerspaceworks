@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import { authOptions } from "@/lib/auth-options";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
+import Client from "@/lib/models/Client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,11 @@ const createUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   role: z.enum(["client", "employee"]),
+  finalBudget: z.string().trim().optional().default("0"),
+  projectName: z.string().trim().optional().default(""),
+  projectDescription: z.string().trim().optional().default(""),
+  validFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  validTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 
 // ===============================
@@ -72,6 +78,26 @@ export async function POST(request) {
       return Response.json({ error: "User already exists" }, { status: 409 });
     }
 
+    // If role is client and validFrom/validTo are provided, validate them
+    if (parsed.data.role === "client") {
+      if (!parsed.data.validFrom || !parsed.data.validTo) {
+        return Response.json(
+          { error: "Contract dates (validFrom and validTo) are required for client users" },
+          { status: 400 }
+        );
+      }
+
+      const fromDate = new Date(parsed.data.validFrom);
+      const toDate = new Date(parsed.data.validTo);
+
+      if (fromDate >= toDate) {
+        return Response.json(
+          { error: "Contract ending date must be after starting date" },
+          { status: 400 }
+        );
+      }
+    }
+
     const passwordHash = await bcrypt.hash(parsed.data.password, 12);
 
     const created = await User.create({
@@ -82,6 +108,31 @@ export async function POST(request) {
       isActive: true,
       createdBy: session.user.id,
     });
+
+    // If client user, also create a Client profile
+    let clientProfile = null;
+    if (parsed.data.role === "client") {
+      clientProfile = await Client.create({
+        name: parsed.data.name.trim(),
+        email,
+        phone: "",
+        services: [],
+        budget: "",
+        requirement: "",
+        validFrom: new Date(parsed.data.validFrom),
+        validTo: new Date(parsed.data.validTo),
+        source: "manual-admin",
+        status: "active",
+        linkedUser: created._id,
+        createdBy: session.user.id,
+        finalBudget: parsed.data.finalBudget || "0",
+        projectName: parsed.data.projectName || "",
+        projectDescription: parsed.data.projectDescription || "",
+      });
+
+      // Link client profile to user
+      await User.findByIdAndUpdate(created._id, { clientProfile: clientProfile._id });
+    }
 
     // ===============================
     // SEND EMAIL (SAFE)
@@ -102,17 +153,31 @@ export async function POST(request) {
           },
         });
 
+        let emailHTML = `
+          <h2>Welcome, ${created.name}</h2>
+          <p>Your account has been created successfully.</p>
+          <p><b>Email:</b> ${created.email}</p>
+          <p><b>Temporary Password:</b> ${parsed.data.password}</p>
+          <p>Please change your password after login.</p>
+        `;
+
+        if (parsed.data.role === "client" && parsed.data.validFrom && parsed.data.validTo) {
+          emailHTML += `
+            <hr />
+            <h3>Contract Information</h3>
+            <p><b>Contract Starting Date:</b> ${new Date(parsed.data.validFrom).toLocaleDateString()}</p>
+            <p><b>Contract Ending Date:</b> ${new Date(parsed.data.validTo).toLocaleDateString()}</p>
+            ${parsed.data.finalBudget ? `<p><b>Final Budget:</b> ${parsed.data.finalBudget}</p>` : ""}
+            ${parsed.data.projectName ? `<p><b>Project Name:</b> ${parsed.data.projectName}</p>` : ""}
+            ${parsed.data.projectDescription ? `<p><b>Project Description:</b> ${parsed.data.projectDescription}</p>` : ""}
+          `;
+        }
+
         await transporter.sendMail({
           from: `"CyberSpace Works" <${process.env.EMAIL_USER}>`,
           to: created.email,
           subject: "Your Account Has Been Created",
-          html: `
-            <h2>Welcome, ${created.name}</h2>
-            <p>Your account has been created successfully.</p>
-            <p><b>Email:</b> ${created.email}</p>
-            <p><b>Temporary Password:</b> ${parsed.data.password}</p>
-            <p>Please change your password after login.</p>
-          `,
+          html: emailHTML,
         });
       } else {
         console.warn("Email skipped: Missing env vars");
@@ -130,6 +195,7 @@ export async function POST(request) {
           role: created.role,
           isActive: created.isActive,
         },
+        clientProfile: clientProfile ? clientProfile._id : null,
       },
       { status: 201 }
     );

@@ -46,6 +46,9 @@ export default async function DashboardLayout({ children }) {
                 <Link href="/dashboard/admin/leads" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
                   Leads
                 </Link>
+                <Link href="/dashboard/admin/clients" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
+                  Clients
+                </Link>
               </>
             ) : null}
             <LogoutButton />
