@@ -28,6 +28,9 @@ export default async function DashboardLayout({ children }) {
             <Link href="/dashboard/tickets" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
               Tickets
             </Link>
+            <Link href="/dashboard/marketplace" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
+              Marketplace
+            </Link>
             {session.user.role === "admin" ? (
               <Link href="/dashboard/admin/billing" className="rounded-md border border-cyan-500/30 px-3 py-2 text-sm hover:bg-cyan-500/10">
                 Billing

@@ -125,10 +125,10 @@ export async function POST(request, { params }) {
         await transporter.sendMail({
           from: `"CyberSpace Works" <${process.env.EMAIL_USER}>`,
           to: user.email,
-          subject: "Your Account Has Been Created - Lead Converted to Client",
+          subject: "Your Account Has Been Created - Welcome to CyberSpace Works",
           html: `
             <h2>Welcome, ${user.name}</h2>
-            <p>Your lead has been converted to a client and your account has been created successfully.</p>
+            <p>Your account has been created successfully.</p>
             <p><b>Email:</b> ${user.email}</p>
             <p><b>Temporary Password:</b> ${validated.password}</p>
             <p><b>Contract Valid From:</b> ${new Date(validated.validFrom).toLocaleDateString()}</p>
