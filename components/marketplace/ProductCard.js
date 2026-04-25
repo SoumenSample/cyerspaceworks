@@ -23,14 +23,14 @@ export default function ProductCard({ product }) {
           <h3 className="product-title">{product.title}</h3>
           <p className="product-description">{product.description}</p>
 
-          <div className="product-stats">
+          {/* <div className="product-stats">
             <span className="stat">
               <i>👁️</i> {product.views} views
             </span>
             <span className="stat">
               <i>❤️</i> {product.interests} interests
             </span>
-          </div>
+          </div> */}
 
           <div className="product-price">
             <span className="price">{displayPrice}</span>
