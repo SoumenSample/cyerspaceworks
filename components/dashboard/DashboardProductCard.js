@@ -5,6 +5,7 @@ import "./dashboard-marketplace.css";
 
 export default function DashboardProductCard({ product }) {
   const [showInterestForm, setShowInterestForm] = useState(false);
+  const displayPrice = Number(product.price) === 0 ? "Free" : `₹${product.price}`;
 
   return (
     <>
@@ -32,7 +33,7 @@ export default function DashboardProductCard({ product }) {
           </div> */}
 
           <div className="product-price">
-            <span className="price">₹{product.price}</span>
+            <span className="price">{displayPrice}</span>
             <span className="by">by {product.createdByName}</span>
           </div>
 
